@@ -1,0 +1,18 @@
+{
+    "name": "travelrez/rezb2b",
+    "description": "Rezb2b connect with travelrez",
+    "license": "mit",
+    "authors": [{
+        "name": "Pravin Solanki",
+        "email": "iipl.pravins@gmail.com"
+    }],
+    "type": "library",
+    "require": {
+        "php": ">=5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Travelrez\\Rezb2b\\": "src/"
+        }
+    }
+}
