@@ -13,17 +13,10 @@ class GetProductPriceCalculationResponse extends Response
     public function isSuccessful()
     {
 
-        if(is_array($this->data)) {
-            foreach ($this->data as $key => $row) {
-
-                if ($row->code != 200) {
+        if (isset($this->data->code) && $this->data->code == 200) {
                     
-                    return false;
-
-                }
-            }
-
             return true;
+
         }
 
         return false;
@@ -55,41 +48,34 @@ class GetProductPriceCalculationResponse extends Response
 
         $bookingReturn = array();
 
-        $items = $this->data;
+        $item = $this->data;
 
         $total = 0;
         $subTotal = 0;
         $bookingItems = array();
 
-        if(!empty($items)){ 
+        if(!empty($item)){ 
 
-            foreach($items as $item) {
+            list($providerId, $productId)  = explode("-", $item->data->product_id);
 
-                $total += $item->data->price->total;
-                $subTotal += $item->data->price->total;
+            $price = array(
+                "total" => $item->data->price->total,
+                "sub_total" => $item->data->price->total,
+                "price_breakdown" => $item->data->price->converted_total,
+            );
 
-                $bookingItems[] = array(
-                    "product_name"         => $item->data->product_name,
-                    "product_code"         => $item->data->product_id,
-                    "departure_start_date" => $item->data->departure_date,
-                    "departure_end_date"   => $item->data->departure_date,
-                    "rates"                => array(),
-                    "no_of_guest"          => 0,
-                    "sub_total"            => $item->data->price->sub_total,
-                    "total"                => $item->data->price->total
-                );
-
-
-
-            }
-
-            $bookingReturn["total_amount"]   = $total;
-            $bookingReturn["total_currency"] = $subTotal;
-            $bookingReturn["items"]          = $bookingItems;
+            $bookingItems[] = array(
+                "product_code"         => $productId,
+                "provider_id"          => $providerId,
+                "departure_start_date" => $item->data->departure_date,
+                "departure_end_date"   => null,
+                "sale_currency"        => $item->data->price->code,
+                "price"                => $price 
+            );
 
         }
 
-        return $bookingReturn;
+        return $bookingItems;
 
     }
 

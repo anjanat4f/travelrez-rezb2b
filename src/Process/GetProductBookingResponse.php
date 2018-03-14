@@ -216,7 +216,7 @@ class GetProductBookingResponse extends Response
             foreach($subOptions as $option) {
 
                 $selections[] = array(
-                    "value"                => $option->parent_id."_".$option->option_id,
+                    "value"                => $option->option_id,
                     "price"                => null,
                     "option_sale_currency" => "USD",
                     "text"                 => $option->option_name,
