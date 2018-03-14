@@ -316,7 +316,7 @@ $data = array(
 	    )
 	)
    ),
-   customers => array(
+   "customers" => array(
        array(
             "title"      => "Mr",
             "first_name" => "Pravin",
