@@ -19,8 +19,12 @@ class CreateBookingResponse extends Response
 
     public function getResult()
     {
+        $firstItem = reset($this->data->data->order_product->item);
 
-        echo "<pre>";print_r($this->data);die;
+        return array(
+            "booking_id" => $this->data->data->order_id,
+            "status"     => $firstItem->status,
+        );
 
     }
 

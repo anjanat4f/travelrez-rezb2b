@@ -19,7 +19,7 @@ class CreateBookingRequest extends AbstractRequest
 
         $this->validate('apiKey');
 
-        $data = $this->getBaseData();
+        $data = $this->getParameters();
 
         return $data;
     }
@@ -34,45 +34,49 @@ class CreateBookingRequest extends AbstractRequest
         return $this->getBaseEndpoint() . "/agent/order/create";
     }
 
+    public function getCustomers()
+    {
+        return $this->getParameter("customers");
+    }
+
+    public function setCustomers($value)
+    {
+        return $this->setParameter("customers", $value);
+    }
+
     public function sendData($data)
     {
 
         $items    = $this->getItems();
-        $customer = $this->getCustomer();
-        $note     = $this->getNote();
+
+
+        $postData = array();
+
+        $customer = $this->getCustomers();
+
+        $postData["item"][] =  array(
+            "product_id"     => $items["product_code"],
+            "departure_date" => $items["departure_start_date"],
+            "rate_options"   => $items["rates"],
+            "upgrade"        => $items["options"],
+            "guest"          => $items["participants"]   
+        );
+
+        $postData["order_subscriber"] = $customer[0];
+        
+        /*$note     = $this->getNote();
 
         $params["item"]             = $this->reArrangePost($items);
-        $params["order_subscriber"] = $customer;
-        $params["note_info"]        = $note;
-        $params["book_platform"]    = "api";
+        $params["order_subscriber"] = $customer[0];
+        $params["note_info"]        = "";
+        */
+        $postData["book_platform"]    = "api";
 
-        $httpResponse = $this->httpClient->send("POST", $this->getEndPoint() , ["api-key" => $this->getApiKey()], $params);
+        //echo '<pre>'; print_r($postData); echo '</pre>';exit();
+
+        $httpResponse = $this->httpClient->send("POST", $this->getEndPoint() , ["api-key" => $this->getApiKey()], $postData);
 
         return $this->createResponse($httpResponse->getBody());
-
-    }
-
-    public function reArrangePost($items)
-    {
-        $return = array();
-
-        if (!empty($items)) {
-            foreach ($items as $k => $item) {
-
-                $return[$k] = array(
-                    "product_id"         => $item["product_code"],
-                    "departure_date"     => $item["departure_start_date"],
-                    "rate_options"       => $item["rates"],
-                    "upgrade"            => isset($item["extra"]) ? $item["extra"] : [],
-                    "guest"              => $item["guest"],
-                    "departure_location" => isset($item["departure_location"]) ? $item["departure_location"] : "",
-                    "pickup_location"    => isset($item["pickup_location"]) ? $item["pickup_location"] : "",
-                );
-
-            }
-        }
-
-        return $return;
 
     }
 
