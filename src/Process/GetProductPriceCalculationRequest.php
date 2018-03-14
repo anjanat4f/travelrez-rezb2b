@@ -24,12 +24,41 @@ class GetProductPriceCalculationRequest extends AbstractRequest
         return $this->getBaseEndpoint() . "/price";
     }
 
+
+    public function getRates()
+    {
+        return $this->getParameter("rates");
+    }
+
+    public function setRates($value)
+    {
+        return $this->setParameter("rates", $value);
+    }
+
+    public function getOptions()
+    {
+        return $this->getParameter("options");
+    }
+
+    public function setOptions($value)
+    {
+        return $this->setParameter("options", $value);
+    }
+
+    public function getDepartureStartDate()
+    {
+        return $this->getParameter("departure_start_date");
+    }
+
+    public function setDepartureStartDate($value)
+    {
+        return $this->setParameter("departure_start_date", $value);
+    }
+
     public function getData()
     {
 
-        $postData = $this->getItems();
-
-        $data["items"] = $postData;
+        $data = $this->getParameters();
 
         return $data;
 
@@ -46,34 +75,31 @@ class GetProductPriceCalculationRequest extends AbstractRequest
 
         $uri = $this->getEndpoint();
 
-        if (!empty($data["items"])) {
+        $rates = array();
 
-            foreach ($data["items"] as $key => $row) {
-
-                $rates = array();
-
-                if (!empty($row["rates"])) {
-                    foreach ($row["rates"] as $roomNo => $rowRates) {
-                        foreach ($rowRates as $rowR) {
-                            $rates[$roomNo][$rowR["rate_id"]] = $rowR["qty"];
-                        }
-
-                    }
-                }
-
-                $params = array(
-                    "departure_date" => $row["departure_start_date"],
-                    "rate_options"   => $rates,
-                );
-
-                $httpResponse = $this->httpClient->send("POST", $uri . "/" . $row["product_code"] . "/price-calculate", ["api-key" => $this->getApiKey()], $params);
-
-                $response[] = json_decode((string)$httpResponse->getBody());
-
+        if(!empty($data["rates"])) {
+            foreach($data["rates"] as $r =>  $rate) {
+                foreach($rate as $rat) {
+                    $rates[$r][$rat["rate_id"]]  =    $rat["qty"];
+                }    
             }
         }
 
-        return $this->createResponse($response);
+
+
+        $options =  $this->getOptions();
+
+        
+        $params = array(
+            "departure_date" => $this->getDepartureStartDate(),
+            "rate_options"   => $rates,
+            "upgrade" => $options
+        );
+
+        $httpResponse = $this->httpClient->send("POST", $uri . "/" . $data["product_code"] . "/price-calculate", ["api-key" => $this->getApiKey()], $params);
+
+
+        return $this->createResponse($httpResponse->getBody());
 
     }
 

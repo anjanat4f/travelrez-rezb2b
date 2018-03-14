@@ -21,7 +21,7 @@ class GetProductResponse extends Response
     {
 
         $product       = $this->getProductFromData();
-    
+
         list($providerId, $productId) = explode("-", $product->productBasic->product_id);
 
         return [
@@ -97,8 +97,9 @@ class GetProductResponse extends Response
         if (!empty($rates)) {
             foreach ($rates as $key => $raw) {
 
+
                 $returnRates[] = array(
-                    "rate_id"      => 0,
+                    "rate_id"      => $raw->product_rate_type_id,
                     "name"         => $raw->rate_type_name,
                     "label"        => $raw->rate_type_name,
                     "seats_used"   => 1,
