@@ -307,12 +307,12 @@ $data = array(
         ),
 	"participants" => array(
 	    array(
-		"first_name"  => "Dilip1",
-		"last_name"   => "Pithiya1"  
+		"first_name"  => "Foo1",
+		"last_name"   => "Bar1"  
 	    ),
 	    array(
-		"first_name"  => "Dilip2",
-		"last_name"   => "Pithiya2"  
+		"first_name"  => "Foo2",
+		"last_name"   => "Bar2"  
 	    )
 	)
    ),
