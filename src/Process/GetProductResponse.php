@@ -21,9 +21,12 @@ class GetProductResponse extends Response
     {
 
         $product       = $this->getProductFromData();
+    
+        list($providerId, $productId) = explode("-", $product->productBasic->product_id);
 
         return [
-            "provider_code"               => $product->productBasic->product_id,
+            "provider_code"               => $productId,
+            "provider_id"                 => $providerId,
             "provider_name"               => "Rezb2b",
             "name"                        => $product->productDescription->name,
             "product_entity_type"         => $product->productBasic->product_entity_type,
@@ -38,8 +41,10 @@ class GetProductResponse extends Response
             "short_description"           => $product->productDescription->brief_description,
             "images"                      => $this->getProductMedia($product),
             "free_sale"                   => $this->getProductFreeSale($product),
-            "booking_fields"              => $this->getProductBookingFields($product),
+            //"attributes"                  => $this->getAttributes($product),
             "pickup_locations"            => $this->getPickupLocations($product),
+            "booking_fields"              => $this->getProductBookingFields($product),
+            
         ];
 
     }
@@ -202,6 +207,78 @@ class GetProductResponse extends Response
     public function getPickupLocations($product)
     {
         return array();
+    }
+
+    public function getAttributes($product)
+    {
+
+        $attributes = array();
+
+        if(!empty($product->productUpgrade)) {
+
+            $upgrades = $product->productUpgrade;
+
+            foreach($upgrades as $upgrade) {
+
+                $attributes[] = array(
+                    "attribute_id"        => $upgrade->upgrade_id,
+                    "attribute_name"        => $upgrade->upgrade_name,
+                    "attribute_description" => $upgrade->upgrade_description,
+                    "is_multiple"           => $upgrade->is_multi,
+                    "minimum_required"      => $upgrade->required,
+                    "options"               => $this->getAttributeOptions($upgrade->options)
+                ); 
+
+            }
+
+
+        }
+
+        return $attributes;
+
+
+    }
+
+    public function getAttributeOptions($options = array())
+    {
+
+        $returnOptions = array();
+
+        if(!empty($options)){
+            foreach($options as $option) {
+                $returnOptions[] = array(
+                    "option_id"   => $option->option_id,
+                    "option_name" => $option->option_name,
+                    "sub_options" => isset($option->options) ? $this->getAttributeSubOptions($option->options) : array()
+                );
+
+            }
+        }
+
+        return $returnOptions; 
+
+
+    }
+
+    public function getAttributeSubOptions($options)
+    {
+
+        $returnOptions = array();
+
+        if(!empty($options)){
+            foreach($options as $option) {
+
+                $returnOptions[] = array(
+                    "option_id"   => $option->parent_id."_".$option->option_id,
+                    "option_name" => $option->option_name,
+                );
+
+            }
+        }
+
+        return $returnOptions; 
+
+
     }
 
 }

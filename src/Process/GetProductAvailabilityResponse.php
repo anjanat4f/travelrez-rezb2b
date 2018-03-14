@@ -14,8 +14,13 @@ class GetProductAvailabilityResponse extends Response
         if (isset($this->data->code)) {
 
             if ($this->data->code == 200) {
-                
-                return true;
+
+                if (!empty($this->data->prices)) {
+                    return true;
+                }
+
+                $this->code    = 500;
+                $this->message = "Sorry,No operation found!";
 
             }
 
@@ -34,11 +39,34 @@ class GetProductAvailabilityResponse extends Response
         if (!empty($session)) {
 
             return array(
+                //"rate_options"    => $this->getRates($session),
                 "available_dates" => $this->getAvailableDates($session),
             );
 
         }
 
+    }
+
+    public function getRates()
+    {
+        $rates = isset($this->data->rates) ? $this->data->rates : array();
+        $returnRates =  array();
+
+        if(!empty($rates)) {
+            foreach($rates as $rate) {
+                $returnRates[] = array(
+                    "rate_id" => $rate->product_rate_type_id,
+                    "name" => $rate->name,
+                    "label" => $rate->label1,
+                    "seats_used" => $rate->qty_count,
+                    "min_quantity" => 1,
+                    "max_quantity" => 1,
+                    "price_type" => "ITEM##PERSON"
+                );
+            }
+        }
+
+        return $returnRates;
     }
 
     public function getProductSessionFromData()
@@ -75,7 +103,7 @@ class GetProductAvailabilityResponse extends Response
                 }
 
                 $departureDates[$operationDate]["departure_times"][$departureTime]["rates"] = $this->getSessionRates($raw->rates);
-            
+
             }
 
         }
