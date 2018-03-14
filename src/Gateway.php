@@ -50,6 +50,15 @@ class Gateway extends AbstractGateway
         return $this->createRequest('\Travelrez\Rezb2b\Process\GetProductPriceCalculationRequest', $parameters);
 
     }
+
+    public function getProductBookingRequest(array $parameters = array())
+    {
+
+        return $this->createRequest('\Travelrez\Rezb2b\Process\GetProductBookingRequest', $parameters);
+
+    }
+
+    
     
     public function createBooking(array $parameters = array())
     {

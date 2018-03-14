@@ -11,7 +11,8 @@ class GetProductAvailabilityRequest extends AbstractRequest
     const API_VERSION = 'v1';
 
     protected $liveEndpoint = 'http://product.services.rezb2b.com';
-    protected $testEndpoint = 'http://product.services.qa.rezb2b.com';
+    //protected $testEndpoint = 'http://product.services.qa.rezb2b.com';
+    protected $testEndpoint = 'http://nayan-master.product.service';
 
 
     public function getData()

@@ -39,7 +39,7 @@ class GetProductAvailabilityResponse extends Response
         if (!empty($session)) {
 
             return array(
-                "rate_options"    => $this->getRates($session),
+                //"rate_options"    => $this->getRates($session),
                 "available_dates" => $this->getAvailableDates($session),
             );
 

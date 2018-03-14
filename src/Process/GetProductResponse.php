@@ -21,11 +21,12 @@ class GetProductResponse extends Response
     {
 
         $product       = $this->getProductFromData();
-
-        
+    
+        list($providerId, $productId) = explode("-", $product->productBasic->product_id);
 
         return [
-            "provider_code"               => $product->productBasic->product_id,
+            "provider_code"               => $productId,
+            "provider_id"                 => $providerId,
             "provider_name"               => "Rezb2b",
             "name"                        => $product->productDescription->name,
             "product_entity_type"         => $product->productBasic->product_entity_type,
@@ -40,7 +41,7 @@ class GetProductResponse extends Response
             "short_description"           => $product->productDescription->brief_description,
             "images"                      => $this->getProductMedia($product),
             "free_sale"                   => $this->getProductFreeSale($product),
-            "attributes"                  => $this->getAttributes($product),
+            //"attributes"                  => $this->getAttributes($product),
             "pickup_locations"            => $this->getPickupLocations($product),
             "booking_fields"              => $this->getProductBookingFields($product),
             
