@@ -283,4 +283,70 @@ total | double | tour total
 sub_total | double | tour sub total
 price_breakdown | array | only display purpose return how price was calculated in array
 
+4 . Create order
 
+
+```php
+
+$data = array(
+  "items" => array(
+    	"product_code" => "3", // example product code
+    	"departure_start_date" => "YYYY-MM-DD h:i:00",	
+    	"rates" => array(
+	   1 => array(
+	    	array(
+		    "rate_id" => $firstRates["rate_id"],
+		    "qty"     => "2",
+	    	)
+	   ),
+    	),
+	"options" => array(
+            "490" => array(
+	    	1680
+	    )
+        ),
+	"participants" => array(
+	    array(
+		"first_name"  => "Dilip1",
+		"last_name"   => "Pithiya1"  
+	    ),
+	    array(
+		"first_name"  => "Dilip2",
+		"last_name"   => "Pithiya2"  
+	    )
+	)
+   ),
+   customers => array(
+       array(
+            "title"      => "Mr",
+            "first_name" => "Pravin",
+            "last_name"  => "Solanki",
+            "email"      => "iipl.pravins@gmail.com",
+       )
+   )   
+);
+
+$response = $gateway->createBooking($data)->send();
+
+if($response->isSuccessful()){
+   echo '<pre>';print_r($response->getResult());die;	
+}else{
+   echo  "Error " .$response->getCode() . ': ' . $response->getMessage();
+}
+```
+
+
+## Request
+
+Key  |  Type | Information
+--- | --- | ---
+items | array | item array see in example
+customers | array | customers (travellers checkout options) array see in example
+
+
+## Response 
+
+Key  |  Type | Information
+--- | --- | ---
+booking_id | string | booking number
+status | string | booking status string like confirmed or quatation
