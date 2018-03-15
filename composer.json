@@ -2,7 +2,6 @@
     "name": "travelrez/rezb2b",
     "description": "Rezb2b connect with travelrez",
     "license": "mit",
-    "minimum-stability": "stable",
     "authors": [{
         "name": "Pravin Solanki",
         "email": "iipl.pravins@gmail.com"
