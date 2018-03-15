@@ -28,6 +28,10 @@ class Response extends AbstractResponse
 
         if (!$this->isSuccessful()) {
 
+            if(isset($this->message)) {
+                return $this->message;
+            }
+
             if (isset($this->data->code) && $this->data->code != 200 ) {
 
                 $this->message = json_encode($this->data->message);
@@ -39,9 +43,26 @@ class Response extends AbstractResponse
         }
     }
 
+    public function setCode($code)
+    {
+        return $this->code  = $code; 
+    }
+
+    public function setMessage($messsage)
+    {
+        return $this->message  = $messsage; 
+        
+    }
+
+
     public function getCode()
     {
         if (!$this->isSuccessful()) {
+
+
+            if(isset($this->code)) {
+                return $this->code;
+            }
 
             if (isset($this->data->code) && $this->data->code != 200 ) {
 
