@@ -98,11 +98,22 @@ class GetProductResponse extends Response
         if (!empty($rates)) {
             foreach ($rates as $key => $raw) {
 
+                $rateName = $raw->rate_type_name;
+                if($raw->product_rate_type_id == "ADULT_RATE") {
+                    $rateName = "Adult";
+                }else if($raw->product_rate_type_id == "CHILD_RATE") {
+                    $rateName = "Child";
+                }
 
-                $returnRates[] = array(
+                if(isset($returnRates[$raw->product_rate_type_id])) {
+                    continue;
+                }
+
+
+                $returnRates[$raw->product_rate_type_id] = array(
                     "rate_id"      => $raw->product_rate_type_id,
                     "name"         => $raw->rate_type_name,
-                    "label"        => $raw->rate_type_name,
+                    "label"        => $rateName,
                     "seats_used"   => 1,
                     "min_quantity" => 1,
                     "max_quantity" => 30,
