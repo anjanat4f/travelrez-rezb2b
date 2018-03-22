@@ -14,5 +14,7 @@
         "psr-4": {
             "Travelrez\\Rezb2b\\": "src/"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

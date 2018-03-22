@@ -216,4 +216,137 @@ postcode | string | postal code of pickup
 geocode | string  | geo code of location
 
 
+4 . Get Product Price Calculation
 
+
+```php
+
+$items = array(
+	"product_code" => "3", // example product code
+	"departure_start_date" => "YYYY-MM-DD h:i:00",	
+	"rates" => array(
+	    array(
+	    	array(
+		     "rate_id" => RATE_ID,
+		     "qty"     => QTY
+		),
+		array(
+		     "rate_id" => RATE_ID,
+		     "qty"     => QTY
+		)
+	    )
+	),
+    "start_time" => "value",	
+    "duration" => "8 days 7 night",
+    "options" => array(
+        "490" => array("280") // as rezb2b allow multiple upgrade
+    )
+);
+
+$response = $gateway->getProductPriceCalculation($items)->send();
+
+if($response->isSuccessful()){
+   echo '<pre>';print_r($response->getResult());die;	
+}else{
+   echo  "Error " .$response->getCode() . ': ' . $response->getMessage();
+}
+```
+
+## Request
+
+Key  |  Type | Information
+--- | --- | ---
+product_code | string | product code unique identifier
+departure_start_date | datetime | please add date time format for the select departure date , if there is no departure time than you can use 00:00:00
+rates | array | send booking array of rate with array("rate_id" => "ID of rate" , "qty" => 1)
+duration | string | send tour total duration sring like "8 days and 7 nights see product response , check 1 . Get Product Information"
+start_time | string | not required but if tour has multiple start time than add it
+options | array | send option and value together like ``` "options" => array("490" => array("280")) ```
+
+
+## Response 
+
+Key  |  Type | Information
+--- | --- | ---
+product_code | int | product code
+provider_id | int | tour provider id or channel id
+departure_start_date  | string | tour start date in date time format like "2018-03-15 08:00"
+departure_end_date  | string | tour end date in date time format like "2018-03-15 08:00"
+sale_currency   | string | product currency   
+price | array | product price [see here](#productprice)
+
+## ProductPrice
+
+Key  |  Type | Information
+--- | --- | ---
+total | double | tour total 
+sub_total | double | tour sub total
+price_breakdown | array | only display purpose return how price was calculated in array
+
+4 . Create order
+
+
+```php
+
+$data = array(
+  "items" => array(
+    	"product_code" => "3", // example product code
+    	"departure_start_date" => "YYYY-MM-DD h:i:00",	
+    	"rates" => array(
+	   1 => array(
+	    	array(
+		    "rate_id" => $firstRates["rate_id"],
+		    "qty"     => "2",
+	    	)
+	   ),
+    	),
+	"options" => array(
+            "490" => array(
+	    	1680
+	    )
+        ),
+	"participants" => array(
+	    array(
+		"first_name"  => "Foo1",
+		"last_name"   => "Bar1"  
+	    ),
+	    array(
+		"first_name"  => "Foo2",
+		"last_name"   => "Bar2"  
+	    )
+	)
+   ),
+   "customers" => array(
+       array(
+            "title"      => "Mr",
+            "first_name" => "Pravin",
+            "last_name"  => "Solanki",
+            "email"      => "iipl.pravins@gmail.com",
+       )
+   )   
+);
+
+$response = $gateway->createBooking($data)->send();
+
+if($response->isSuccessful()){
+   echo '<pre>';print_r($response->getResult());die;	
+}else{
+   echo  "Error " .$response->getCode() . ': ' . $response->getMessage();
+}
+```
+
+
+## Request
+
+Key  |  Type | Information
+--- | --- | ---
+items | array | item array see in example
+customers | array | customers (travellers checkout options) array see in example
+
+
+## Response 
+
+Key  |  Type | Information
+--- | --- | ---
+booking_id | string | booking number
+status | string | booking status string like confirmed or quatation

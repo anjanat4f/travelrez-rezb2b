@@ -31,6 +31,7 @@ class GetProductResponse extends Response
             "name"                        => $product->productDescription->name,
             "product_entity_type"         => $product->productBasic->product_entity_type,
             "is_departure_date_required"  => true,
+            "display_room_option"         => $product->productBasic->display_room_option,
             "min_per_booking"             => $product->productBasic->min_guest_number,
             "max_per_booking"             => 20,
             "duration"                    => $product->productBasic->duration." ".$product->productBasic->duration_unit,
@@ -97,11 +98,22 @@ class GetProductResponse extends Response
         if (!empty($rates)) {
             foreach ($rates as $key => $raw) {
 
+                $rateName = $raw->rate_type_name;
+                if($raw->product_rate_type_id == "ADULT_RATE") {
+                    $rateName = "Adult";
+                }else if($raw->product_rate_type_id == "CHILD_RATE") {
+                    $rateName = "Child";
+                }
 
-                $returnRates[] = array(
+                if(isset($returnRates[$raw->product_rate_type_id])) {
+                    continue;
+                }
+
+
+                $returnRates[$raw->product_rate_type_id] = array(
                     "rate_id"      => $raw->product_rate_type_id,
                     "name"         => $raw->rate_type_name,
-                    "label"        => $raw->rate_type_name,
+                    "label"        => $rateName,
                     "seats_used"   => 1,
                     "min_quantity" => 1,
                     "max_quantity" => 30,

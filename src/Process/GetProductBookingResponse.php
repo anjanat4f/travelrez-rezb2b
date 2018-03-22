@@ -170,6 +170,7 @@ class GetProductBookingResponse extends Response
                 $returnAttr[] = array(
                     "option_name"       => $raw->upgrade_name,
                     "option_id"         => $raw->upgrade_id,
+                    "is_multi"          => $raw->is_multi,    
                     "short_description" => isset($raw->upgrade_description) ? $raw->upgrade_description : "",
                     "option_selections" => $this->attributeSelections($raw->options),
                 );
