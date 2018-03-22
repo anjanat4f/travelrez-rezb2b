@@ -10,9 +10,8 @@ class CreateBookingRequest extends AbstractRequest
 
     const API_VERSION = '';
 
-    protected $liveEndpoint = 'http://order.services.rezb2b.com';
-    //protected $testEndpoint = 'http://product.services.qa.rezb2b.com';
-    protected $testEndpoint = 'http://nayan-master.order.service';
+    protected $liveEndpoint = ORDER_SERVICE_URL;
+    protected $testEndpoint = ORDER_SERVICE_URL_SANDBOX;
 
     public function getData()
     {

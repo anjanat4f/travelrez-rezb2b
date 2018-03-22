@@ -10,9 +10,8 @@ class GetProductRequest extends AbstractRequest
 
     const API_VERSION = 'v1';
 
-    protected $liveEndpoint = 'http://product.services.rezb2b.com';
-    //protected $testEndpoint = 'http://product.services.qa.rezb2b.com';
-    protected $testEndpoint = 'http://nayan-master.product.service';
+    protected $liveEndpoint = PRODUCT_SERVICE_URL;
+    protected $testEndpoint = PRODUCT_SERVICE_URL_SANDBOX;
 
     public function getData()
     {
