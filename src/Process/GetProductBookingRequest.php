@@ -85,7 +85,7 @@ class GetProductBookingRequest extends AbstractRequest
 
         $query = http_build_query($params);
 
-        $httpResponse = $this->httpClient->send("GET", $uri . "/" . $data["product_code"] . "/availability?".$query, ["api-key" => "00c521f8bd816035af483df1f"/*$this->getApiKey()*/], $params);
+        $httpResponse = $this->httpClient->send("GET", $uri . "/" . $data["product_code"] . "/availability?".$query, ["api-key" => $this->getApiKey()], $params);
 
         $response = $httpResponse->getBody();
 

@@ -72,15 +72,15 @@ class GetProductBookingResponse extends Response
 
             $pricingSection = $this->getPricingSection($item->prices, $request["departure_start_date"]);
 
-            $firstRate = reset($pricingSection->rates);
+            $firstRate = isset($pricingSection->rates) && is_array($pricingSection->rates) ? reset($pricingSection->rates) : [];
 
             $bookingItems["price"] = array(
                 "sale_currency"       => "USD",
                 "min_booking_size"    => null,
                 "spaces_remaining"    => null,
-                "total_price"         => $firstRate->price,
-                "total_price_display" => $firstRate->converted_price,
-                "price_breakdown"     => $firstRate->converted_price,
+                "total_price"         => isset($firstRate->price) ? $firstRate->price : 0,
+                "total_price_display" => isset($firstRate->converted_price) ? $firstRate->converted_price : 0,
+                "price_breakdown"     => isset($firstRate->converted_price) ? $firstRate->converted_price : 0,
             );
 
             

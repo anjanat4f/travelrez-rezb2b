@@ -62,15 +62,17 @@ class GetProductPriceCalculationResponse extends Response
                 "total" => $item->data->price->total,
                 "sub_total" => $item->data->price->total,
                 "price_breakdown" => $item->data->price->converted_total,
+                "total_cost" => $item->data->price->total_cost,
+                "sub_total_cost" => $item->data->price->sub_total_cost,
+                "converted_cost" => $item->data->price->converted_cost,
             );
-
             $bookingItems[] = array(
                 "product_code"         => $productId,
                 "provider_id"          => $providerId,
                 "departure_start_date" => $item->data->departure_date,
                 "departure_end_date"   => null,
                 "sale_currency"        => $item->data->price->code,
-                "price"                => $price 
+                "price"                => $price
             );
 
         }
