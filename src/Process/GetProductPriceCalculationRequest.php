@@ -54,6 +54,16 @@ class GetProductPriceCalculationRequest extends AbstractRequest
         return $this->setParameter("departure_start_date", $value);
     }
 
+    public function getFor()
+    {
+        return $this->getParameter("for");
+    }
+
+    public function setFor($value)
+    {
+        return $this->setParameter("for", $value);
+    }
+
     public function getData()
     {
 
@@ -94,6 +104,10 @@ class GetProductPriceCalculationRequest extends AbstractRequest
             "rate_options"   => $rates,
             "upgrade" => $options
         );
+        
+        if (isset($data['for'])) {
+            $params['for'] = $data['for']; 
+        }
 
         $httpResponse = $this->httpClient->send("POST", $uri . "/" . $data["product_code"] . "/price-calculate", ["api-key" => $this->getApiKey()], $params);
 
