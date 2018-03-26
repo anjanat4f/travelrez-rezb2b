@@ -156,6 +156,9 @@ class GetProductResponse extends Response
     public function getProductBookingFields($product)
     {
         $returnBookingFields = array();
+
+        $isRequiredLeadonly = isset($product->productBasic->is_required_only_lead_traveler) && $product->productBasic->is_required_only_lead_traveler == true  ? true  : false;
+
         $bookingFields       = isset($product->productPassengerAttribute) ? $product->productPassengerAttribute : [];
 
         if (!empty($bookingFields)) {
@@ -164,10 +167,10 @@ class GetProductResponse extends Response
 
                 $returnBookingFields[] = array(
                     "label"                    => $bookingField->name,
-                    "required_per_participant" => 1,
-                    "required_per_booking"     => 0,
-                    "visible_per_participant"  => 1,
-                    "visible_per_booking"      => 0,
+                    "required_per_participant" => ($isRequiredLeadonly) ? 0 : 1,
+                    "required_per_booking"     => ($isRequiredLeadonly) ? 1 : 0,
+                    "visible_per_participant"  => ($isRequiredLeadonly) ? 0 : 1,
+                    "visible_per_booking"      => ($isRequiredLeadonly) ? 1 : 0,
                     "field_type"               => $bookingField->type,
                     "options"                  => $bookingField->options,
                     "tips"                     => $bookingField->tips,

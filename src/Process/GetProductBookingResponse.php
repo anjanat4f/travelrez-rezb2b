@@ -72,7 +72,9 @@ class GetProductBookingResponse extends Response
 
             $pricingSection = $this->getPricingSection($item->prices, $request["departure_start_date"]);
 
-            $firstRate = isset($pricingSection->rates) && is_array($pricingSection->rates) ? reset($pricingSection->rates) : [];
+
+
+            $firstRate = isset($pricingSection->rates) && count($pricingSection->rates) > 0 ? reset($pricingSection->rates) : [];
 
             $bookingItems["price"] = array(
                 "sale_currency"       => "USD",
