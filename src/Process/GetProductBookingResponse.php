@@ -10,7 +10,6 @@ class GetProductBookingResponse extends Response
 
     public function isSuccessful()
     {
-
         if ($this->data->code == 200) {
 
             return true;
@@ -72,8 +71,6 @@ class GetProductBookingResponse extends Response
 
             $pricingSection = $this->getPricingSection($item->prices, $request["departure_start_date"]);
 
-
-
             $firstRate = isset($pricingSection->rates) && count($pricingSection->rates) > 0 ? reset($pricingSection->rates) : [];
 
             $bookingItems["price"] = array(
@@ -85,7 +82,6 @@ class GetProductBookingResponse extends Response
                 "price_breakdown"     => isset($firstRate->converted_price) ? $firstRate->converted_price : 0,
             );
 
-            
             $attributes = $this->getAttributes($item->attributes);
 
             $bookingItems["attributes"] = $attributes;
@@ -93,6 +89,7 @@ class GetProductBookingResponse extends Response
             $pickupPoints = $this->getPickupPoints($pricingSection);
 
             if (!empty($pickupPoints)) {
+                $bookingItems["pickup_on_request"] = isset($pickupPoints[0]["pickup_on_request"]) && $pickupPoints[0]["pickup_on_request"] == 1 ? 1 : 0;
                 $bookingItems["pickup_points"] = $pickupPoints;
             }
 
@@ -141,16 +138,35 @@ class GetProductBookingResponse extends Response
                 $availTimes = $departure->available_times;
 
                 foreach ($availTimes as $key => $time) {
-                    $timeLocation[] = array(
-                        "pickup_key"  => $time . " " . $departure->title,
-                        "time"        => $time,
-                        "pickup_name" => $departure->title,
-                        "description" => "",
-                        "address1"    => $departure->address,
-                        "address2"    => "",
-                        "postcode"    => "",
-                        "geocode"     => $departure->latitude.",".$departure->longitute,
-                    );
+
+                    if ($departure->pick_up_service == 1) {
+
+                        $timeLocation[] = array(
+                            "pickup_key"        => $time,
+                            "time"              => $time,
+                            "pickup_on_request" => $departure->pick_up_service,
+                            //"pickup_name" => $departure->title,
+                            //"description" => "",
+                            //"address1"    => $departure->address,
+                            //"address2"    => "",
+                            //"postcode"    => "",
+                            //"geocode"     => $departure->latitude.",".$departure->longitute,
+                        );
+
+                    } else {
+                        $timeLocation[] = array(
+                            "pickup_key"        => $time . " " . $departure->title,
+                            "time"              => $time,
+                            "pickup_name"       => $departure->title,
+                            "description"       => "",
+                            "address1"          => $departure->address,
+                            "address2"          => "",
+                            "postcode"          => "",
+                            "geocode"           => $departure->latitude . "," . $departure->longitute,
+                            "pickup_on_request" => $departure->pick_up_service,
+                        );
+                    }
+
                 }
 
             }
@@ -160,19 +176,18 @@ class GetProductBookingResponse extends Response
 
     }
 
-
     public function getAttributes($attributes)
     {
 
         $returnAttr = array();
 
-        if(!empty($attributes)) {
+        if (!empty($attributes)) {
             foreach ($attributes as $key => $raw) {
-                
+
                 $returnAttr[] = array(
                     "option_name"       => $raw->upgrade_name,
                     "option_id"         => $raw->upgrade_id,
-                    "is_multi"          => $raw->is_multi,    
+                    "is_multi"          => $raw->is_multi,
                     "short_description" => isset($raw->upgrade_description) ? $raw->upgrade_description : "",
                     "option_selections" => $this->attributeSelections($raw->options),
                 );
@@ -183,14 +198,13 @@ class GetProductBookingResponse extends Response
         return $returnAttr;
     }
 
-
     public function attributeSelections($options)
     {
         $selections = array();
 
-        if(!empty($options)) {
+        if (!empty($options)) {
 
-            foreach($options as $option) {
+            foreach ($options as $option) {
 
                 $selections[] = array(
                     "value"                => $option->option_id,
@@ -198,7 +212,7 @@ class GetProductBookingResponse extends Response
                     "option_sale_currency" => "USD",
                     "text"                 => $option->option_name,
                     "is_has_sub"           => !empty($option->options) ? 1 : 0,
-                    "sub_options"          => !empty($option->options) ? $this->getSuboptions($option->options) : array(),  
+                    "sub_options"          => !empty($option->options) ? $this->getSuboptions($option->options) : array(),
                 );
 
             }
@@ -214,9 +228,9 @@ class GetProductBookingResponse extends Response
 
         $selections = array();
 
-        if(!empty($subOptions)) {
+        if (!empty($subOptions)) {
 
-            foreach($subOptions as $option) {
+            foreach ($subOptions as $option) {
 
                 $selections[] = array(
                     "value"                => $option->option_id,

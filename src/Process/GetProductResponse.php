@@ -31,7 +31,7 @@ class GetProductResponse extends Response
             "name"                        => $product->productDescription->name,
             "product_entity_type"         => $product->productBasic->product_entity_type,
             "is_departure_date_required"  => true,
-            "display_room_option"         => $product->productBasic->display_room_option,
+            "display_room_option"         => isset($product->productBasic->display_room_option) ? $product->productBasic->display_room_option : false,
             "min_per_booking"             => $product->productBasic->min_guest_number,
             "max_per_booking"             => 20,
             "duration"                    => $product->productBasic->duration." ".$product->productBasic->duration_unit,

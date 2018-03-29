@@ -59,7 +59,6 @@ class CreateBookingRequest extends AbstractRequest
             "rate_options"      => $items["rates"],
             "upgrade"           => $items["options"],
             "guest"             => $items["participants"],
-            "note_info"         => $items["comment"],
             "pickup_location"   => @$items["pickup_location"],
             "departure_location"=> @$items["departure_location"],
             "flight"            => array(
@@ -85,6 +84,8 @@ class CreateBookingRequest extends AbstractRequest
         $params["order_subscriber"] = $customer[0];
         $params["note_info"]        = "";
         */
+        $note     = $this->getNote();
+        $postData["note_info"]    = $note;
         $postData["book_platform"]    = "api";
 
         //echo '<pre>'; print_r($postData); echo '</pre>';exit();
