@@ -104,6 +104,8 @@ class GetProductResponse extends Response
                     $rateName = "Adult";
                 }else if($raw->product_rate_type_id == "CHILD_RATE") {
                     $rateName = "Child";
+                }else if($raw->product_rate_type_id == "PERSON_RATE") {
+                    $rateName = "Person";
                 }
 
                 if(isset($returnRates[$raw->product_rate_type_id])) {

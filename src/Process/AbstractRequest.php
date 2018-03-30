@@ -85,6 +85,16 @@ abstract class AbstractRequest extends \Travelrez\Common\Message\AbstractRequest
         $data["apiKey"] = $this->getApiKey();
         return $data;
     }
+    
+    public function getOrderId()
+    {
+        return $this->getParameter('order_id');
+    }
+
+    public function setOrderId($value)
+    {
+        return $this->setParameter('order_id', $value);
+    }
 
     public function sendData($data)
     {
