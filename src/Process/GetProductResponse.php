@@ -46,6 +46,7 @@ class GetProductResponse extends Response
             "pickup_locations"            => $this->getPickupLocations($product),
             "booking_fields"              => $this->getProductBookingFields($product),
             "first_available_date"        => $product->productBasic->operationStartDate,
+            "is_soldout"                  => $product->productBasic->is_soldout
             
         ];
 

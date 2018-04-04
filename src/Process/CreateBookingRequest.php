@@ -30,7 +30,7 @@ class CreateBookingRequest extends AbstractRequest
 
     public function getEndPoint()
     {
-        return $this->getBaseEndpoint() . "/agent/order/create";
+        return $this->getBaseEndpoint() . "agent/order/create";
     }
 
     public function getCustomers()
@@ -54,6 +54,7 @@ class CreateBookingRequest extends AbstractRequest
 
         $postData["item"][] = array(
             "product_id"         => $items["product_code"],
+            "order_product_id"   => $items["order_product_id"],   
             "departure_date"     => $items["departure_start_date"],
             "rate_options"       => $items["rates"],
             "upgrade"            => $items["options"],
@@ -87,11 +88,7 @@ class CreateBookingRequest extends AbstractRequest
         $postData["note_info"]     = $this->getNote();
         $postData["order_id"]      = $this->getOrderId();
         $postData["book_platform"] = "api";
-
-        //echo '<pre>'; print_r($postData); echo '</pre>';exit("jere");
-
         $httpResponse = $this->httpClient->send("POST", $this->getEndPoint(), ["api-key" => $this->getApiKey()], $postData);
-
         return $this->createResponse($httpResponse->getBody());
 
     }

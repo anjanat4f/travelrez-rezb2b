@@ -35,16 +35,21 @@ class GetProductAvailabilityResponse extends Response
     {
 
         $session = $this->getProductSessionFromData();
-
+        $isAutoConfirm = $this->getAutoConfirmFlag();
         if (!empty($session)) {
 
             return array(
                 //"rate_options"    => $this->getRates($session),
                 "available_dates" => $this->getAvailableDates($session),
+                "isAutoConfirm" => $isAutoConfirm
             );
 
         }
 
+    }
+    
+    public function getAutoConfirmFlag() {
+        return ($this->data->basicInfo->is_auto_confirm == 1) ? true : false;
     }
 
     public function getRates()

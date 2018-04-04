@@ -65,6 +65,8 @@ class GetProductPriceCalculationResponse extends Response
                 "total_cost" => $item->data->price->total_cost,
                 "sub_total_cost" => $item->data->price->sub_total_cost,
                 "converted_cost" => $item->data->price->converted_cost,
+                "attribute_total" => $item->data->price->attribute_total,
+                "attribute_cost" => $item->data->price->attribute_cost
             );
             $bookingItems[] = array(
                 "product_code"         => $productId,
