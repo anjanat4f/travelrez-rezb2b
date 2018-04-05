@@ -97,6 +97,8 @@ class GetProductResponse extends Response
 
         $returnRates = array();
 
+        $first = 0;
+
         if (!empty($rates)) {
             foreach ($rates as $key => $raw) {
 
@@ -113,17 +115,20 @@ class GetProductResponse extends Response
                     continue;
                 }
 
+                $defaultSelRate = ($first == 0) ? 2 : 0;
 
                 $returnRates[$raw->product_rate_type_id] = array(
                     "rate_id"      => $raw->product_rate_type_id,
                     "name"         => $raw->rate_type_name,
                     "label"        => $rateName,
                     "seats_used"   => 1,
-                    "min_quantity" => 1,
+                    "min_quantity" => $defaultSelRate,
                     "max_quantity" => 30,
                     "price"        => $raw->price, 
                     "price_type"   => "ITEM",
                 );
+
+                $first++;
 
             }
         }
