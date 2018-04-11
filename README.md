@@ -36,7 +36,6 @@ if($response->isSuccessful()){
 Key  |  Type | Information
 --- | --- | ---
 product_code | string |  product code unique identifier (some time same code but diffrent channel)
-channel_id | string |  channel id for that tour called provider id as well
 
 ## Response
 Key  |  Type | Information
@@ -47,9 +46,10 @@ provider_name | string | tour provider name
 name | string | tour name
 product_entity_type | string | tour type
 is_departure_date_required | bool | departure date required for booking ?
+display_room_option | bool | display room option for booking?
 min_per_booking | int | minimum person per booking
 max_per_booking | int | maximum person per booking
-duration | mix | duration of tour
+duration | string | duration of tour
 currency | char | currency 3 char code
 default_price | decimal | default tour price
 rates | array | [see here](#rates)
@@ -57,8 +57,8 @@ description | text | tour description
 short_description | text | tour short description
 images | array | [see here](#images)
 free_sale | bool | is tour free sale ?
-booking_fields | array | [see here](#bookingfields)
 pickup_locations | array | pickup locations
+booking_fields | array | [see here](#bookingfields)
 
 ## Rates
 Key  |  Type | Information
@@ -69,7 +69,7 @@ label | string | rate label
 seats_used | int | seats will use for when select this rate
 min_quantity | int | min quantity needed for select this rate
 max_quantity | int | max quantity needed for select this rate
-from_price | decimal | rate price start from (price is as per tour currency)
+price | decimal | rate price start from (price is as per tour currency)
 price_type   | string | identify rates is per order , per person etc (future updates)
 
 ## Images
@@ -83,12 +83,14 @@ extra_image_url | array | extra images if there
 Key  |  Type | Information
 --- | --- | ---
 label | string | Booking field label
-required_per_participant | int | is field required per participant
-required_per_booking | int | is field required per booking
-visible_per_participant | int | is field visible per participant 
-visible_per_booking | int | is field visible per participant 
+required_per_participant | bool | is field required per participant
+required_per_booking | bool | is field required per booking
+visible_per_participant | bool | is field visible per participant 
+visible_per_booking | bool | is field visible per booking 
 field_type | string | field type like TEXT 
-
+options | array | available options to choose
+tips | string | tips for the field
+use_for | array | need to display this field for which rate id eg. ALL / ADULT_RATE
 
 
 2 . Get Product Avaiability
@@ -120,6 +122,7 @@ end_date | date | end date to find certain periods avaibility
 Key  |  Type | Information
 --- | --- | ---
 available_dates | array | list of all available tours [see here](#availability) 
+isAutoConfirm | bool | will tour be auto confirmed based on start date?
 
 ## Availability
 Key  |  Type | Information
@@ -158,7 +161,7 @@ if($response->isSuccessful()){
 Key  |  Type | Information
 --- | --- | ---
 product_code | string | product code unique identifier
-departure_start_date | datetime | please add date time format for the select departure date , if there is no departure time than you can use 00:00:00
+departure_start_date | date | departure start date to get booking fields for
 
 ## Response 
 
@@ -167,9 +170,10 @@ Key  |  Type | Information
 product_code | int | product id
 product_name | string | product name 
 sale_quantity_rule | string | product sale quantity rule like person wise 
-price | string | product price [see here](#price)
+price | array | product price [see here](#price)
 attributes | array | product attributes [see here](#attributes)
-pickup_points | array | product attributes [see here](#pickup)
+pickup_on_request | bool | need pickup location from customer?
+pickup_points | array | product pickup points [see here](#pickup)
 
 ## Price
 
@@ -187,7 +191,8 @@ price_breakdown | string | only display purpose if you are converting price than
 Key  |  Type | Information
 --- | --- | ---
 option_name | string | attribute option name
-option_id | string | attribute option id
+option_id | int | attribute option id
+is_multi | bool | multiple option values can be selected?
 short_description | text | short description of option 
 option_selections | array | attributes options [see here](#options)
 total_price_display | string | only display purpose if you are converting price than do not use
@@ -197,10 +202,21 @@ price_breakdown | string | only display purpose if you are converting price than
 
 Key  |  Type | Information
 --- | --- | ---
-value | string | need to be used when option select
+value | int | need to be used when option select
 price | double | option price (Please note this is default price it will multiplied by person/qty/booking/duration)
-option_sale_currency | char | price added on currecy 
+option_sale_currency | char | currency used in price
 text | string | option name
+is_has_sub | bool | has sub options?
+sub_options | array | available sub options [see here](#suboptions) 
+
+## SubOptions
+
+Key  |  Type | Information
+--- | --- | ---
+value | int | need to be used when sub option select
+price | double | sub option price (Please note this is default price it will multiplied by person/qty/booking/duration)
+option_sale_currency | char | currency used in price
+text | string | sub option name
 
 ## Pickup
 
@@ -210,10 +226,11 @@ pickup_key | string | send when booking it is value of that pickup
 time | string | pickup time 
 pickup_name | string | pickup name
 description | string | pickup description
-address1 | srting | pickup address
-address2 | srting | pickup address
+address1 | srting | pickup address line 1
+address2 | srting | pickup address line 2
 postcode | string | postal code of pickup
 geocode | string  | geo code of location
+pickup_on_request | bool | need pickup location from customer?
 
 
 4 . Get Product Price Calculation
@@ -223,7 +240,7 @@ geocode | string  | geo code of location
 
 $items = array(
 	"product_code" => "3", // example product code
-	"departure_start_date" => "YYYY-MM-DD h:i:00",	
+	"departure_start_date" => "YYYY-MM-DD",	
 	"rates" => array(
 	    array(
 	    	array(
@@ -236,8 +253,6 @@ $items = array(
 		)
 	    )
 	),
-    "start_time" => "value",	
-    "duration" => "8 days 7 night",
     "options" => array(
         "490" => array("280") // as rezb2b allow multiple upgrade
     )
@@ -257,10 +272,8 @@ if($response->isSuccessful()){
 Key  |  Type | Information
 --- | --- | ---
 product_code | string | product code unique identifier
-departure_start_date | datetime | please add date time format for the select departure date , if there is no departure time than you can use 00:00:00
+departure_start_date | date | date of departure
 rates | array | send booking array of rate with array("rate_id" => "ID of rate" , "qty" => 1)
-duration | string | send tour total duration sring like "8 days and 7 nights see product response , check 1 . Get Product Information"
-start_time | string | not required but if tour has multiple start time than add it
 options | array | send option and value together like ``` "options" => array("490" => array("280")) ```
 
 
@@ -269,10 +282,10 @@ options | array | send option and value together like ``` "options" => array("49
 Key  |  Type | Information
 --- | --- | ---
 product_code | int | product code
-provider_id | int | tour provider id or channel id
-departure_start_date  | string | tour start date in date time format like "2018-03-15 08:00"
-departure_end_date  | string | tour end date in date time format like "2018-03-15 08:00"
-sale_currency   | string | product currency   
+provider_id | int | tour provider id
+departure_start_date  | string | tour start date in date format like "2018-03-15"
+departure_end_date  | string | tour end date in date format like "2018-03-15"
+sale_currency   | char | product currency   
 price | array | product price [see here](#productprice)
 
 ## ProductPrice
@@ -281,7 +294,8 @@ Key  |  Type | Information
 --- | --- | ---
 total | double | tour total 
 sub_total | double | tour sub total
-price_breakdown | array | only display purpose return how price was calculated in array
+price_breakdown | array | only display purpose return how price was calculated
+attribute_total | double | selected attribute's total
 
 4 . Create order
 
@@ -291,12 +305,12 @@ price_breakdown | array | only display purpose return how price was calculated i
 $data = array(
   "items" => array(
     	"product_code" => "3", // example product code
-    	"departure_start_date" => "YYYY-MM-DD h:i:00",	
+    	"departure_start_date" => "YYYY-MM-DD",	
     	"rates" => array(
 	   1 => array(
 	    	array(
-		    "rate_id" => $firstRates["rate_id"],
-		    "qty"     => "2",
+		    "rate_id" => ADULT_RATE,
+		    "qty"     => 2,
 	    	)
 	   ),
     	),
@@ -314,16 +328,18 @@ $data = array(
 		"first_name"  => "Foo2",
 		"last_name"   => "Bar2"  
 	    )
-	)
+	),
+	"pickup_location" => "", // customer's pickup in case of pickup_on_request = 1 see 3. Get Product Booking Request 
+	"departure_location" => "11:30 AM::Golden era park"
    ),
    "customers" => array(
-       array(
-            "title"      => "Mr",
-            "first_name" => "Pravin",
-            "last_name"  => "Solanki",
-            "email"      => "iipl.pravins@gmail.com",
-       )
-   )   
+       "title"      => "Mr",
+       "first_name" => "Pravin",
+       "last_name"  => "Solanki",
+       "email"      => "iipl.pravins@gmail.com",
+       "telephone"  => +91 7896541230
+   ),
+   "note" => ""
 );
 
 $response = $gateway->createBooking($data)->send();
@@ -342,6 +358,7 @@ Key  |  Type | Information
 --- | --- | ---
 items | array | item array see in example
 customers | array | customers (travellers checkout options) array see in example
+note | string | Special note from customer if any
 
 
 ## Response 
@@ -349,6 +366,6 @@ customers | array | customers (travellers checkout options) array see in example
 Key  |  Type | Information
 --- | --- | ---
 booking_id | string | booking number
-status | string | booking status string like confirmed or quatation
+status | string | booking status string like confirmed or New
 
 23-03-2018
