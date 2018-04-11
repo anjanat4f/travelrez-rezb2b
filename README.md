@@ -193,6 +193,7 @@ Key  |  Type | Information
 option_name | string | attribute option name
 option_id | int | attribute option id
 is_multi | bool | multiple option values can be selected?
+required | int | number of options you can select 
 short_description | text | short description of option 
 option_selections | array | attributes options [see here](#options)
 total_price_display | string | only display purpose if you are converting price than do not use
@@ -231,6 +232,7 @@ address2 | srting | pickup address line 2
 postcode | string | postal code of pickup
 geocode | string  | geo code of location
 pickup_on_request | bool | need pickup location from customer?
+special_note | string | special note for pickup point
 
 
 4 . Get Product Price Calculation
@@ -330,7 +332,19 @@ $data = array(
 	    )
 	),
 	"pickup_location" => "", // customer's pickup in case of pickup_on_request = 1 see 3. Get Product Booking Request 
-	"departure_location" => "11:30 AM::Golden era park"
+	"departure_location" => "11:30 AM::Golden era park",
+	"flight" => array(
+		"arrival_airline_name" => "Air France",
+		"arrival_flight_no" => "AF 356",
+		"arrival_airport_name" => "YYZ",
+		"arrival_date" => "2018-05-01",
+		"arrival_time" => "12:00",
+		"departure_airline_name" => "Air France",
+		"departure_flight_no" => "AF 412",
+		"departure_airport_name" => "YYZ",
+		"departure_date" => "2018-05-04",
+		"departure_time" => "16:10"
+	)
    ),
    "customers" => array(
        "title"      => "Mr",
