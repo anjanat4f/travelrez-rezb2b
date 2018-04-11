@@ -232,6 +232,7 @@ address2 | srting | pickup address line 2
 postcode | string | postal code of pickup
 geocode | string  | geo code of location
 pickup_on_request | bool | need pickup location from customer?
+special_note | string | special note for pickup point
 
 
 4 . Get Product Price Calculation
