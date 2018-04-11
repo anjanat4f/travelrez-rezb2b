@@ -57,22 +57,30 @@ class GetProductPriceCalculationResponse extends Response
         if(!empty($item)){ 
 
             list($providerId, $productId)  = explode("-", $item->data->product_id);
-
             $price = array(
                 "total" => $item->data->price->total,
                 "sub_total" => $item->data->price->total,
                 "price_breakdown" => $item->data->price->converted_total,
-                "total_cost" => $item->data->price->total_cost,
-                "sub_total_cost" => $item->data->price->sub_total_cost,
-                "converted_cost" => $item->data->price->converted_cost,
-                "attribute_total" => $item->data->price->attribute_total,
-                "attribute_cost" => $item->data->price->attribute_cost
+                "attribute_total" => $item->data->price->attribute_total
             );
+            if ($item->data->price->total_cost > 0) {
+                $price["total_cost"] = $item->data->price->total_cost;    
+            }
+            if ($item->data->price->sub_total_cost > 0) {
+                $price["sub_total_cost"] = $item->data->price->sub_total_cost;    
+            }
+            if (!empty($item->data->price->converted_cost)) {
+                $price["converted_cost"] = $item->data->price->converted_cost;    
+            }
+            if ($item->data->price->attribute_cost > 0) {
+                $price["attribute_cost"] = $item->data->price->attribute_cost;    
+            }
+            
             $bookingItems[] = array(
                 "product_code"         => $productId,
                 "provider_id"          => $providerId,
                 "departure_start_date" => $item->data->departure_date,
-                "departure_end_date"   => null,
+                "departure_end_date"   => $item->data->departure_end_date,
                 "sale_currency"        => $item->data->price->code,
                 "price"                => $price
             );

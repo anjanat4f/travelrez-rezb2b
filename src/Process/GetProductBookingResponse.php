@@ -164,6 +164,7 @@ class GetProductBookingResponse extends Response
                             "postcode"          => "",
                             "geocode"           => $departure->latitude . "," . $departure->longitute,
                             "pickup_on_request" => $departure->pick_up_service,
+                            "special_note"      => $departure->special_note
                         );
                     }
 
@@ -188,6 +189,7 @@ class GetProductBookingResponse extends Response
                     "option_name"       => $raw->upgrade_name,
                     "option_id"         => $raw->upgrade_id,
                     "is_multi"          => $raw->is_multi,
+                    "required"          => $raw->required > 0 ? $raw->required : 1,
                     "short_description" => isset($raw->upgrade_description) ? $raw->upgrade_description : "",
                     "option_selections" => $this->attributeSelections($raw->options),
                 );
