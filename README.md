@@ -184,7 +184,7 @@ price_breakdown | string | only display purpose if you are converting price than
 
 ## Attributes
 
-Key  |  Type | Information
+Key  |  Type | Informations
 --- | --- | ---
 option_name | string | attribute option name
 option_id | string | attribute option id
