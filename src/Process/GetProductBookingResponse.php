@@ -82,7 +82,7 @@ class GetProductBookingResponse extends Response
                 "price_breakdown"     => isset($firstRate->converted_price) ? $firstRate->converted_price : 0,
             );
 
-            $attributes = $this->getAttributes($item->attributes);
+            $attributes = $this->getAttributes($item->attributes,$request);
 
             $bookingItems["attributes"] = $attributes;
 
@@ -177,7 +177,7 @@ class GetProductBookingResponse extends Response
 
     }
 
-    public function getAttributes($attributes)
+    public function getAttributes($attributes,$request = [])
     {
 
         $returnAttr = array();
@@ -191,7 +191,7 @@ class GetProductBookingResponse extends Response
                     "is_multi"          => $raw->is_multi,
                     "required"          => $raw->required > 0 ? $raw->required : 1,
                     "short_description" => isset($raw->upgrade_description) ? $raw->upgrade_description : "",
-                    "option_selections" => $this->attributeSelections($raw->options),
+                    "option_selections" => $this->attributeSelections($raw->options,$request),
                 );
 
             }
@@ -200,22 +200,28 @@ class GetProductBookingResponse extends Response
         return $returnAttr;
     }
 
-    public function attributeSelections($options)
+    public function attributeSelections($options,$request = [])
     {
         $selections = array();
 
         if (!empty($options)) {
 
-            foreach ($options as $option) {
+            foreach ($options as $optKey => $option) {
 
-                $selections[] = array(
+                $selections[$optKey] = array(
                     "value"                => $option->option_id,
-                    "price"                => null,
                     "option_sale_currency" => "USD",
                     "text"                 => $option->option_name,
                     "is_has_sub"           => !empty($option->options) ? 1 : 0,
-                    "sub_options"          => !empty($option->options) ? $this->getSuboptions($option->options) : array(),
+                    "sub_options"          => !empty($option->options) ? $this->getSuboptions($option->options,$request) : array(),
                 );
+                
+                if (!empty($request) && isset($request['for']) && $request['for'] == 't4f') {
+                    
+                    $selections[$optKey]["price"] = $option->price;
+                    $selections[$optKey]["cost_price"] = $option->cost_price;
+                     
+                }
 
             }
 
@@ -225,21 +231,27 @@ class GetProductBookingResponse extends Response
 
     }
 
-    public function getSuboptions($subOptions)
+    public function getSuboptions($subOptions,$request = [])
     {
 
         $selections = array();
 
         if (!empty($subOptions)) {
 
-            foreach ($subOptions as $option) {
+            foreach ($subOptions as $optKey => $option) {
 
-                $selections[] = array(
+                $selections[$optKey] = array(
                     "value"                => $option->option_id,
-                    "price"                => null,
                     "option_sale_currency" => "USD",
                     "text"                 => $option->option_name,
                 );
+                
+                if (!empty($request) && isset($request['for']) && $request['for'] == 't4f') {
+                    
+                    $selections[$optKey]["price"] = $option->price;
+                    $selections[$optKey]["cost_price"] = $option->cost_price;
+                     
+                }
 
             }
 

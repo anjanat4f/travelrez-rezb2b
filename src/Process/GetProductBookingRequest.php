@@ -33,6 +33,16 @@ class GetProductBookingRequest extends AbstractRequest
     {
         return $this->setParameter("departure_start_date", $value);
     }
+    
+    public function getFor()
+    {
+        return $this->getParameter("for");
+    }
+
+    public function setFor($value)
+    {
+        return $this->setParameter("for", $value);
+    }
 
     public function getRates()
     {
@@ -82,6 +92,9 @@ class GetProductBookingRequest extends AbstractRequest
             //"used_in"        => "order",
  
         );
+         if (isset($data['for'])) {
+            $params['for'] = $data['for']; 
+        }
 
         $query = http_build_query($params);
 
