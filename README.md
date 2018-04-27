@@ -59,6 +59,8 @@ images | array | [see here](#images)
 free_sale | bool | is tour free sale ?
 pickup_locations | array | pickup locations
 booking_fields | array | [see here](#bookingfields)
+first_available_date | date | First available date of operation
+is_soldout | boolean | Is product sold out?
 
 ## Rates
 Key  |  Type | Information
